@@ -1,7 +1,5 @@
 package norsys.technomaker;
 
-import com.sun.net.httpserver.HttpExchange;
-
 public class SimpleBot {
 
     public char getDirection(char[][] grid, Coordinates snakeHeadCoordinates, char currentDirection, Coordinates foodCoordinates) {

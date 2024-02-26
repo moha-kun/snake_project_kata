@@ -9,8 +9,8 @@ public class Coordinates {
     private int y;
 
     public Coordinates(int x, int y) {
-        this.x = Math.max(x, DEFAULT_X);
-        this.y = Math.max(y, DEFAULT_Y);
+        this.x = x;
+        this.y = y;
     }
 
     public Coordinates() {

@@ -23,6 +23,10 @@ public class Snake {
         this(DEFAULT_STATE, coordinates);
     }
 
+    public Snake() {
+        this(new Coordinates());
+    }
+
     public char getDirection() {
         return state.charAt(0);
     }

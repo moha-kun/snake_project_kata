@@ -6,6 +6,7 @@ import norsys.technomaker.exceptions.HitWallException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Yard {
@@ -30,17 +31,11 @@ public class Yard {
     }
 
     public Yard(int height, int width, Snake snake) {
-        height = Math.max(height, DEFAULT_HEIGHT);
-        width = Math.max(width, DEFAULT_WIDTH);
-        matrix = new char[height][width];
-        Arrays.stream(matrix)
-                .forEach(array -> Arrays.fill(array, ' '));
-        this.snake = snake;
-        update();
+        this(height, width, snake, null);
     }
 
     public Yard(int height, int width) {
-        this(height, width, new Snake(new Coordinates(height/ 2, width/ 2)));
+        this(height, width, new Snake());
     }
 
     public Yard() {
@@ -130,13 +125,14 @@ public class Yard {
 
     public Coordinates generateRandomFoodCoordinates(char[][] yard) {
         List<Coordinates> list = new ArrayList<>();
-        for (int i = 0; i < yard.length; i++) {
-            for (int j = 0; j < yard[0].length; j++) {
+        for (int i = 1; i < yard.length - 1; i++) {
+            for (int j = 1; j < yard[0].length - 1; j++) {
                 if (yard[i][j] == ' ')
                     list.add(new Coordinates(i, j));
             }
         }
-        int index = (int) Math.floor(Math.random() * list.size());
+        Random randomGenerator = new Random();
+        int index = randomGenerator.nextInt(list.size() - 1);
         return list.get(index);
     }
 

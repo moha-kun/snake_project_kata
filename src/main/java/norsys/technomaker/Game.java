@@ -3,11 +3,11 @@ package norsys.technomaker;
 public class Game {
 
     public void start() {
-        Yard yard = new Yard(12, 30);
+        SimpleBot simpleBot = new SimpleBot();
+        Yard yard = new Yard();
         System.out.println(yard.getYard());
         System.out.print("\033[H\033[2J");
         System.out.flush();
-        SimpleBot simpleBot = new SimpleBot();
         new Thread(
                 () -> {
                     while (true) {
