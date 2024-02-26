@@ -10,6 +10,11 @@ import java.util.stream.Collectors;
 
 public class Yard {
 
+    private static final int DEFAULT_HEIGHT = 12;
+    private static final int DEFAULT_WIDTH = 30;
+    private static final char SNAKE_HEAD = '@';
+    private static final char SNAKE_BODY = '*';
+    private static final char FOOD_SHAPE = 'O';
     private char[][] matrix;
     private Coordinates foodCoordinates;
     private Snake snake;
@@ -25,6 +30,8 @@ public class Yard {
     }
 
     public Yard(int height, int width, Snake snake) {
+        height = Math.max(height, DEFAULT_HEIGHT);
+        width = Math.max(width, DEFAULT_WIDTH);
         matrix = new char[height][width];
         Arrays.stream(matrix)
                 .forEach(array -> Arrays.fill(array, ' '));
@@ -33,11 +40,11 @@ public class Yard {
     }
 
     public Yard(int height, int width) {
-        this(height, width, new Snake("RLLL", new Coordinates(height/ 2, width/ 2)));
+        this(height, width, new Snake(new Coordinates(height/ 2, width/ 2)));
     }
 
     public Yard() {
-        this(10, 10);
+        this(DEFAULT_HEIGHT, DEFAULT_WIDTH);
     }
 
     private void renderWalls() {
@@ -55,6 +62,10 @@ public class Yard {
         return foodCoordinates;
     }
 
+    public char[][] getGrid() {
+        return matrix;
+    }
+
     public void moveSnake() {
         Coordinates nextCoordinates = snake.nextCoordinates();
         checkForCollision(nextCoordinates);
@@ -67,9 +78,9 @@ public class Yard {
         int yCoordinates = nextCoordinates.getY();
         if (isOutOfYard(xCoordinates, yCoordinates))
             throw new HitWallException("You hit the yard wall");
-        if (matrix[xCoordinates][yCoordinates] == '*')
+        if (matrix[xCoordinates][yCoordinates] == SNAKE_BODY)
             throw new BiteTailException("the snake bite its tail");
-        if (matrix[xCoordinates][yCoordinates] == 'O') {
+        if (matrix[xCoordinates][yCoordinates] == FOOD_SHAPE) {
             snake.eat();
             foodCoordinates = null;
         }
@@ -81,7 +92,7 @@ public class Yard {
         renderSnake();
         if (foodCoordinates == null)
             foodCoordinates = generateRandomFoodCoordinates(matrix);
-        matrix[foodCoordinates.getX()][foodCoordinates.getY()] = 'O';
+        matrix[foodCoordinates.getX()][foodCoordinates.getY()] = FOOD_SHAPE;
     }
 
     private void cleanYard() {
@@ -97,7 +108,7 @@ public class Yard {
         int stateLength = state.length();
         for (int stateIndex = 1; stateIndex < stateLength; stateIndex++) {
             char partOfBody = state.charAt(stateIndex);
-            matrix[xCoordinates][yCoordinates] = stateIndex == 1 ? '@' : '*';
+            matrix[xCoordinates][yCoordinates] = stateIndex == 1 ? SNAKE_HEAD : SNAKE_BODY;
             switch (partOfBody) {
                 case 'L' -> yCoordinates--;
                 case 'R' -> yCoordinates++;

@@ -2,6 +2,13 @@ package norsys.technomaker;
 
 public class Snake {
 
+    /*
+        I use here a format of state based on string whereas the first letter
+        represent the direction of the head of the snake, then the rest of the string
+        represent the body.
+        for example "RLLL" represent a snake of length 3 and the direction of his head is right.
+     */
+    private static final String DEFAULT_STATE = "RLLL";
     private StringBuilder state;
     private Coordinates headCoordinates;
     private boolean canGrow;
@@ -12,15 +19,8 @@ public class Snake {
         canGrow = false;
     }
 
-    /*
-        I use here a format of state based on string whereas the first letter
-        represent the direction of the head of the snake, then the rest of the string
-        represent the body.
-        for example "RLLL" represent a snake of length 3 and the direction of his head is right.
-     */
     public Snake(Coordinates coordinates) {
-        // TODO: this coordinates are for a yard of area 10*10, when you develop the yard logic you can change it
-        this("RLLL", coordinates);
+        this(DEFAULT_STATE, coordinates);
     }
 
     public char getDirection() {

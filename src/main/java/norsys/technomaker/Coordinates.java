@@ -2,17 +2,20 @@ package norsys.technomaker;
 
 public class Coordinates {
 
+    private static final int DEFAULT_X = 6;
+    private static final int DEFAULT_Y = 15;
+
     private int x;
     private int y;
 
     public Coordinates(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.x = Math.max(x, DEFAULT_X);
+        this.y = Math.max(y, DEFAULT_Y);
     }
 
     public Coordinates() {
-        x = 2;
-        y = 4;
+        x = DEFAULT_X;
+        y = DEFAULT_Y;
     }
 
     public int getX() {
