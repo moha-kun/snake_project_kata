@@ -8,50 +8,77 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Yard extends Observer {
+public class Yard {
 
     private char[][] matrix;
     private Coordinates foodCoordinates;
+    private Snake snake;
 
-    public Yard(int height, int width) {
+    // this constructor is only for testing
+    public Yard(int height, int width, Snake snake, Coordinates foodCoordinates) {
         matrix = new char[height][width];
         Arrays.stream(matrix)
                 .forEach(array -> Arrays.fill(array, ' '));
-        renderWalls();
+        this.snake = snake;
+        this.foodCoordinates = foodCoordinates;
+        update();
     }
 
-    private void renderWalls() {
-        int height = matrix.length;
-        int width = matrix[0].length;
-        Arrays.fill(matrix[0], '*');
-        Arrays.fill(matrix[height - 1], '*');
-        for (int i = 1; i < height - 1; i++) {
-            matrix[i][0] = '*';
-            matrix[i][width - 1] = '*';
-        }
+    public Yard(int height, int width, Snake snake) {
+        matrix = new char[height][width];
+        Arrays.stream(matrix)
+                .forEach(array -> Arrays.fill(array, ' '));
+        this.snake = snake;
+        update();
+    }
+
+    public Yard(int height, int width) {
+        this(height, width, new Snake("RLLL", new Coordinates(height/ 2, width/ 2)));
     }
 
     public Yard() {
         this(10, 10);
     }
 
-    @Override
-    public void update(Observable observable, Object obj) {
-        if (obj != null) {
-            Coordinates newCoordinates = (Coordinates) obj;
-            int xCoordinates = newCoordinates.getX();
-            int yCoordinates = newCoordinates.getY();
-            if (matrix[xCoordinates][yCoordinates] == '*')
-                throw new HitWallException("You hit the yard wall");
-            if ("URDL".contains(String.valueOf(matrix[xCoordinates][yCoordinates])))
-                throw new BiteTailException("the snake bite its tail");
-            if (matrix[xCoordinates][yCoordinates] == 'O')
-                foodCoordinates = null;
+    private void renderWalls() {
+        int height = matrix.length;
+        int width = matrix[0].length;
+        Arrays.fill(matrix[0], '-');
+        Arrays.fill(matrix[height - 1], '-');
+        for (int i = 1; i < height - 1; i++) {
+            matrix[i][0] = '|';
+            matrix[i][width - 1] = '|';
         }
+    }
+
+    public Coordinates getFoodCoordinates() {
+        return foodCoordinates;
+    }
+
+    public void moveSnake() {
+        Coordinates nextCoordinates = snake.nextCoordinates();
+        checkForCollision(nextCoordinates);
+        snake.move();
+        update();
+    }
+
+    public void checkForCollision(Coordinates nextCoordinates) {
+        int xCoordinates = nextCoordinates.getX();
+        int yCoordinates = nextCoordinates.getY();
+        if (isOutOfYard(xCoordinates, yCoordinates))
+            throw new HitWallException("You hit the yard wall");
+        if (matrix[xCoordinates][yCoordinates] == '*')
+            throw new BiteTailException("the snake bite its tail");
+        if (matrix[xCoordinates][yCoordinates] == 'O') {
+            snake.eat();
+            foodCoordinates = null;
+        }
+    }
+
+    private void update() {
         cleanYard();
         renderWalls();
-        Snake snake = (Snake) observable;
-        renderSnake(snake);
+        renderSnake();
         if (foodCoordinates == null)
             foodCoordinates = generateRandomFoodCoordinates(matrix);
         matrix[foodCoordinates.getX()][foodCoordinates.getY()] = 'O';
@@ -62,7 +89,7 @@ public class Yard extends Observer {
                 .forEach(array -> Arrays.fill(array, ' '));
     }
 
-    private void renderSnake(Snake snake) {
+    private void renderSnake() {
         Coordinates coordinates = snake.getHeadCoordinates();
         int xCoordinates = coordinates.getX();
         int yCoordinates = coordinates.getY();
@@ -70,7 +97,7 @@ public class Yard extends Observer {
         int stateLength = state.length();
         for (int stateIndex = 1; stateIndex < stateLength; stateIndex++) {
             char partOfBody = state.charAt(stateIndex);
-            matrix[xCoordinates][yCoordinates] = partOfBody;
+            matrix[xCoordinates][yCoordinates] = stateIndex == 1 ? '@' : '*';
             switch (partOfBody) {
                 case 'L' -> yCoordinates--;
                 case 'R' -> yCoordinates++;
@@ -86,6 +113,10 @@ public class Yard extends Observer {
                 .collect(Collectors.joining("\n"));
     }
 
+    public Snake getSnake() {
+        return snake;
+    }
+
     public Coordinates generateRandomFoodCoordinates(char[][] yard) {
         List<Coordinates> list = new ArrayList<>();
         for (int i = 0; i < yard.length; i++) {
@@ -96,5 +127,14 @@ public class Yard extends Observer {
         }
         int index = (int) Math.floor(Math.random() * list.size());
         return list.get(index);
+    }
+
+    private boolean isOutOfYard(int xCoordinate, int yCoordinate) {
+        int height = matrix.length;
+        int width = matrix[0].length;
+        return xCoordinate <= 0 ||
+                xCoordinate >= height - 1 ||
+                yCoordinate <= 0 ||
+                yCoordinate >= width - 1;
     }
 }
