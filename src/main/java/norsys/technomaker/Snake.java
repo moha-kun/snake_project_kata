@@ -7,6 +7,8 @@ public class Snake {
         represent the direction of the head of the snake, then the rest of the string
         represent the body.
         for example "RLLL" represent a snake of length 3 and the direction of his head is right.
+        the coordinates of the first letter/head is stored in headCoordinates variable, and every letter
+        refers to the next letter (L: the next part of body is to left, U: the next part is up ...)
      */
     private static final String DEFAULT_STATE = "RLLL";
     private StringBuilder state;

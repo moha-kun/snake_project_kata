@@ -1,5 +1,8 @@
 package norsys.technomaker;
 
+/*
+
+ */
 public class Game {
 
     public void start() {
@@ -12,8 +15,9 @@ public class Game {
                 () -> {
                     while (true) {
                         System.out.println(yard.getYard());
+                        System.out.println("score: " + (yard.getSnake().getState().length() - 4));
                         try {
-                            Thread.sleep(100);
+                            Thread.sleep(50);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }

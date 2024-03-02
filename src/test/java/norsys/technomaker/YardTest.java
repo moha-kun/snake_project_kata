@@ -3,6 +3,7 @@ package norsys.technomaker;
 import norsys.technomaker.exceptions.BiteTailException;
 import norsys.technomaker.exceptions.HitWallException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -61,6 +62,14 @@ public class YardTest {
         yard.moveSnake();
         String actualState = yard.getSnake().getState();
         Assertions.assertEquals(expectedState, actualState);
+    }
+
+    @Test
+    public void shouldReturnTheCoordinatesOfFood() {
+        Yard yard = new Yard(12, 30, new Snake(), new Coordinates(5, 6));
+        Coordinates expectedCoordinates = new Coordinates(5, 6);
+        Coordinates foodCoordinates = yard.getFoodCoordinates();
+        Assertions.assertEquals(expectedCoordinates, foodCoordinates);
     }
 
 }
